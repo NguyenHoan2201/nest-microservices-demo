@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -15,6 +14,7 @@ import { AppService } from './app.service';
             clientId: 'user',
             brokers: ['localhost:9092'],
           },
+          producerOnlyMode: true,
           consumer: {
             groupId: 'user-consumer',
           },
@@ -22,7 +22,7 @@ import { AppService } from './app.service';
       },
     ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [UserController],
+  providers: [UserService]
 })
-export class AppModule { }
+export class UserModule {}

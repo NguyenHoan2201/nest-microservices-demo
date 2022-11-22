@@ -1,23 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '@microservices-demo/shared/dto';
+import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { LoginUserDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
-import { UsersRepository } from './user.repository';
+import { ClientKafka } from '@nestjs/microservices';
+import { timeout } from 'rxjs';
 
 @Injectable()
 export class AppService {
 
-  constructor(private readonly usersRepository: UsersRepository) { }
+  constructor(@Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka) { }
 
   getData(): { message: string } {
     return { message: 'Welcome to auth-microservice!' };
   }
 
-  createUser(data: CreateUserDto): void {
-    this.usersRepository.save(data);
+  login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    console.log('login user');
+    this.userClient
+      .send('get_user_by_email', JSON.stringify({ email }))
+      .pipe(timeout(20000)) // return an error if no response is recieved after 20 secs
+      .subscribe((user: User) => {
+        try {          
+          if (user && user.password === password) {
+            console.log(
+              `login successful for: ${user.firstName + ' ' + user.lastName}`
+            );
+          } else {
+            throw new UnauthorizedException('Invalid Credentials')
+          }
+          
+        } catch (error) {
+          Logger.error(error)
+        }
+      });
   }
 
-  getUser(id: number): User {
-    return this.usersRepository.findOne(id);
+  onModuleInit() {
+    this.userClient.subscribeToResponseOf('get_user_by_email');
   }
 
 }

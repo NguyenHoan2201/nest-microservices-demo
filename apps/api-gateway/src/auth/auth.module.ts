@@ -14,7 +14,6 @@ import { AuthService } from './auth.service';
             clientId: 'auth',
             brokers: ['localhost:9092'],
           },
-          producerOnlyMode: true,
           consumer: {
             groupId: 'auth-consumer',
           },

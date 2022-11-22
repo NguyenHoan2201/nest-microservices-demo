@@ -7,7 +7,7 @@ import { timeout } from 'rxjs';
 @Injectable()
 export class AppService implements OnModuleInit {
   constructor(
-    @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
+    @Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka
   ) { }
 
   getData(): { message: string } {
@@ -17,8 +17,8 @@ export class AppService implements OnModuleInit {
   processPayment(makePaymentDto: MakePaymentDto) {
     const { userId, amount } = makePaymentDto;
       console.log('process payment');
-      this.authClient
-        .send('get_user', JSON.stringify({ userId }))
+      this.userClient
+        .send('get_user_by_id', JSON.stringify({ userId }))
         .pipe(timeout(20000)) // return an error if no response is recieved after 20 secs
         .subscribe((user: User) => {
           try {
@@ -33,6 +33,6 @@ export class AppService implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.authClient.subscribeToResponseOf('get_user');
+    this.userClient.subscribeToResponseOf('get_user_by_id');
   }
 }
