@@ -1,5 +1,5 @@
 import { MakePaymentDto } from '@microservices-demo/shared/dto';
-import { Controller, Get, ValidationPipe } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 
 import { AppService } from './app.service';
@@ -14,7 +14,7 @@ export class AppController {
   }
 
   @EventPattern('process_payment')
-  handleProcessPayment(@Payload(ValidationPipe) data: MakePaymentDto) {
+  handleProcessPayment(@Payload() data: MakePaymentDto) {
     this.appService.processPayment(data);
   }
 }
