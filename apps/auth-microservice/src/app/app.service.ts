@@ -1,11 +1,11 @@
-import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { LoginUserDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
 import { ClientKafka } from '@nestjs/microservices';
 import { timeout } from 'rxjs';
 
 @Injectable()
-export class AppService {
+export class AppService implements OnModuleInit {
 
   constructor(@Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka) { }
 
@@ -20,7 +20,7 @@ export class AppService {
       .send('get_user_by_email', JSON.stringify({ email }))
       .pipe(timeout(20000)) // return an error if no response is recieved after 20 secs
       .subscribe((user: User) => {
-        try {          
+        try {
           if (user && user.password === password) {
             console.log(
               `login successful for: ${user.firstName + ' ' + user.lastName}`
@@ -28,7 +28,7 @@ export class AppService {
           } else {
             throw new UnauthorizedException('Invalid Credentials')
           }
-          
+
         } catch (error) {
           Logger.error(error)
         }
