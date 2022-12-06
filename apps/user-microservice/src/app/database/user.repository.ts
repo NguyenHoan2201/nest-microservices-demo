@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { userDB } from '../assets/user.db';
+import { userDatabase } from './user.database';
 import { User } from '@microservices-demo/shared/entities';
 
 @Injectable()
 export class UsersRepository {
-    private readonly users: Map<number, User> = userDB;
+    private readonly users: Map<number, User> = userDatabase;
 
     save(user: User) {
         const id = this.users.size + 1

@@ -1,9 +1,15 @@
-import { Inject, Injectable, Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+  UnauthorizedException
+} from '@nestjs/common';
 import { LoginUserDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom, timeout } from 'rxjs';
-import { JwtService } from "@nestjs/jwt";
+// import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -21,9 +27,9 @@ export class AppService implements OnModuleInit {
     try {
 
       const { email, password } = loginUserDto;
-      
+
       console.log('login user');
-      
+
       const user: User = await lastValueFrom(this.userClient.send('get_user_by_email', JSON.stringify({ email })).pipe(timeout(30000)));
 
       if (user && user.password === password) {

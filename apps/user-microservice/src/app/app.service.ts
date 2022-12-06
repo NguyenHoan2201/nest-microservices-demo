@@ -1,7 +1,7 @@
 import { CreateUserDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { UsersRepository } from './user.repository';
+import { UsersRepository } from './database/user.repository';
 
 @Injectable()
 export class AppService {
@@ -11,7 +11,7 @@ export class AppService {
     return { message: 'Welcome to user-microservice!' };
   }
 
-  createUser(data: CreateUserDto): void {
+  createUser(data: CreateUserDto): string {
     try {
       const userExists = this.usersRepository.findOneBy({ email: data.email })
 
@@ -20,6 +20,8 @@ export class AppService {
       }
 
       this.usersRepository.save(data);
+
+      return 'user created'
     } catch (error) {
       Logger.error(error)
     }
