@@ -5,11 +5,12 @@ import {
   OnModuleInit,
   UnauthorizedException
 } from '@nestjs/common';
-import { LoginUserDto } from '@microservices-demo/shared/dto';
-import { User } from '@microservices-demo/shared/entities';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom, timeout } from 'rxjs';
 // import { JwtService } from "@nestjs/jwt";
+import { LoginUserDto } from '@microservices-demo/shared/dto';
+import { User } from '@microservices-demo/shared/entities';
+import { kafkaTopics } from '@microservices-demo/shared/topics';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -30,7 +31,9 @@ export class AppService implements OnModuleInit {
 
       console.log('login user');
 
-      const user: User = await lastValueFrom(this.userClient.send('get_user_by_email', JSON.stringify({ email })).pipe(timeout(30000)));
+      const user: User = await lastValueFrom(
+        this.userClient.send(kafkaTopics.getUserByEmail, JSON.stringify({ email })
+        ).pipe(timeout(30000)));
 
       if (user && user.password === password) {
         console.log(
@@ -57,7 +60,7 @@ export class AppService implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.userClient.subscribeToResponseOf('get_user_by_email');
+    this.userClient.subscribeToResponseOf(kafkaTopics.getUserByEmail);
   }
 
 }

@@ -2,7 +2,8 @@ import { Inject, Injectable, Logger, NotFoundException, OnModuleInit } from '@ne
 import { ClientKafka } from '@nestjs/microservices';
 import { MakePaymentDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
-import { timeout } from 'rxjs';
+import { kafkaTopics } from '@microservices-demo/shared/topics'
+import { lastValueFrom, timeout } from 'rxjs';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -14,25 +15,30 @@ export class AppService implements OnModuleInit {
     return { message: 'Welcome to payments-microservice!' };
   }
 
-  processPayment(makePaymentDto: MakePaymentDto) {
-    const { userId, amount } = makePaymentDto;
+  async processPayment(makePaymentDto: MakePaymentDto) {
+    try {
+      const { userId, amount } = makePaymentDto;
+
       console.log('process payment');
-      this.userClient
-        .send('get_user_by_id', JSON.stringify({ userId }))
-        .pipe(timeout(20000)) // return an error if no response is recieved after 20 secs
-        .subscribe((user: User) => {
-          try {
-            if (!user) throw new NotFoundException(`User with ID: ${userId} not found`)
-          console.log(
-            `process payment for user ${user.firstName + ' ' + user.lastName} - amount: ${amount}`
-          );
-          } catch (error) {
-            Logger.error(error)
-          }
-        });
+
+      const user: User = await lastValueFrom(
+        this.userClient.send(kafkaTopics.getUserByID, JSON.stringify({ userId })
+        ).pipe(timeout(30000)));
+
+      if (user) {
+        console.log(
+          `process payment for user ${user.firstName + ' ' + user.lastName} - amount: ${amount}`
+        );
+      } else {
+        throw new NotFoundException(`User with ID: ${userId} not found`)
+      }
+
+    } catch (error) {
+      Logger.error(error)
+    }
   }
 
   onModuleInit() {
-    this.userClient.subscribeToResponseOf('get_user_by_id');
+    this.userClient.subscribeToResponseOf(kafkaTopics.getUserByID);
   }
 }

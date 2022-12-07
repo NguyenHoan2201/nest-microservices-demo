@@ -1,8 +1,8 @@
-import { CreateUserDto } from '@microservices-demo/shared/dto';
 import { Controller, Get, ParseIntPipe } from '@nestjs/common';
 import { EventPattern, Payload, MessagePattern } from '@nestjs/microservices';
-
 import { AppService } from './app.service';
+import { CreateUserDto } from '@microservices-demo/shared/dto';
+import { kafkaTopics } from '@microservices-demo/shared/topics';
 
 @Controller()
 export class AppController {
@@ -13,17 +13,17 @@ export class AppController {
     return this.appService.getData();
   }
 
-  @EventPattern('create_user')
+  @EventPattern(kafkaTopics.createUser)
   handleUserCreate(@Payload() data: CreateUserDto) {
     this.appService.createUser(data);
   }
 
-  @MessagePattern('get_user_by_id')
+  @MessagePattern(kafkaTopics.getUserByID)
   handleGetUser(@Payload('userId', ParseIntPipe) userId: number) {
     return this.appService.getUser(userId);
   }
 
-  @MessagePattern('get_user_by_email')
+  @MessagePattern(kafkaTopics.getUserByEmail)
   handleGetUserByEmail(@Payload('email') email: string) {
     return this.appService.getUserByEmail(email);
   }

@@ -1,8 +1,8 @@
-import { MakePaymentDto } from '@microservices-demo/shared/dto';
 import { Controller, Get } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-
 import { AppService } from './app.service';
+import { MakePaymentDto } from '@microservices-demo/shared/dto';
+import { kafkaTopics } from '@microservices-demo/shared/topics'
 
 @Controller()
 export class AppController {
@@ -13,7 +13,7 @@ export class AppController {
     return this.appService.getData();
   }
 
-  @EventPattern('process_payment')
+  @EventPattern(kafkaTopics.processPayment)
   handleProcessPayment(@Payload() data: MakePaymentDto) {
     this.appService.processPayment(data);
   }

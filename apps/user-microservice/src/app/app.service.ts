@@ -1,7 +1,7 @@
-import { CreateUserDto } from '@microservices-demo/shared/dto';
-import { User } from '@microservices-demo/shared/entities';
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { UsersRepository } from './database/user.repository';
+import { CreateUserDto } from '@microservices-demo/shared/dto';
+import { User } from '@microservices-demo/shared/entities';
 
 @Injectable()
 export class AppService {
