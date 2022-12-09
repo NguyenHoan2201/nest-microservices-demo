@@ -1,12 +1,12 @@
-import { Controller, Get, ParseIntPipe } from '@nestjs/common';
-import { EventPattern, Payload, MessagePattern } from '@nestjs/microservices';
-import { UserService } from './user.service';
-import { CreateUserDto } from '@microservices-demo/shared/dto';
-import { kafkaTopics } from '@microservices-demo/shared/topics';
+import { Controller, Get, ParseIntPipe } from "@nestjs/common";
+import { EventPattern, Payload, MessagePattern } from "@nestjs/microservices";
+import { UserService } from "./user.service";
+import { CreateUserDto } from "@microservices-demo/shared/dto";
+import { kafkaTopics } from "@microservices-demo/shared/topics";
 
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get()
   getData() {
@@ -20,11 +20,11 @@ export class UserController {
 
   @MessagePattern(kafkaTopics.getUserByID)
   handleGetUser(@Payload('userId', ParseIntPipe) userId: string) {
-    return this.userService.getUser(userId);
+    return this.userService.findOneById(userId);
   }
 
   @MessagePattern(kafkaTopics.getUserByEmail)
   handleGetUserByEmail(@Payload('email') email: string) {
-    return this.userService.getUserByEmail(email);
+    return this.userService.findOneByEmail(email);
   }
 }

@@ -4,9 +4,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import configuration from '../config/configuration';
 import { UserModule } from './user/user.module';
 import { User } from '@microservices-demo/shared/entities';
+import configuration from '../config/configuration';
 
 @Module({
   imports: [

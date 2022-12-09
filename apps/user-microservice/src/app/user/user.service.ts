@@ -3,13 +3,15 @@ import {
     HttpException,
     HttpStatus,
     Injectable,
-    Logger
+    Logger,
+    NotFoundException,
+    UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateUserDto } from '@microservices-demo/shared/dto';
-import { User } from '@microservices-demo/shared/entities';
-import { PostgresErrorCodes } from '@microservices-demo/shared/interfaces'
+import { CreateUserDto, UpdateUserDto } from "@microservices-demo/shared/dto";
+import { User } from "@microservices-demo/shared/entities";
+import { PostgresErrorCodes } from "@microservices-demo/shared/interfaces"
 
 @Injectable()
 export class UserService {
@@ -27,25 +29,66 @@ export class UserService {
 
             return newUser;
         } catch (error) {
-            Logger.error(error.message);
+            Logger.error(error);
             if (error?.code === PostgresErrorCodes.UniqueViolation) {
                 throw new ConflictException(
                     `User with ${createUserDto.email} already exists`
                 );
             }
-            throw new HttpException(
-                error.message ?? "SOMETHING WENT WRONG",
-                error.status ?? HttpStatus.INTERNAL_SERVER_ERROR
-            );
         }
     }
 
-    async getUser(id: string): Promise<User> {
-        return await this.usersRepository.findOneBy({ id })
+    async findOneByEmail(email: string): Promise<User> {
+        try {
+            const foundUser = await this.usersRepository.findOneBy({ email });
+
+            if (foundUser) {
+                return foundUser;
+            }
+
+            throw new UnauthorizedException("Invalid Credentials");
+        } catch (error) {
+            Logger.error(error);
+        }
     }
 
-    async getUserByEmail(email: string): Promise<User> {
-        console.log('fetching user by email..........')
-        return await this.usersRepository.findOneBy({ email })
+    async findOneById(id: string): Promise<Partial<User>> {
+        try {
+            const foundUser = await this.usersRepository.findOne({
+                select: {
+                    id: true,
+                    email: true,
+                    lastLogin: true,
+                    roles: true,
+                },
+                where: { id },
+            });
+
+            if (foundUser) {
+                return foundUser;
+            }
+
+            throw new NotFoundException(
+                `User with id: ${id} does not exist on this server`
+            );
+        } catch (error) {
+            Logger.error(error.message);
+        }
+    }
+
+    async update(id: string, updateUserDto: UpdateUserDto) {
+        try {
+            await this.usersRepository.update(id, updateUserDto);
+        } catch (error) {
+            Logger.error(error);
+        }
+    }
+
+    async delete(id: string) {
+        try {
+            await this.usersRepository.delete(id);
+        } catch (error) {
+            Logger.error(error);
+        }
     }
 }
