@@ -11,4 +11,5 @@ Monorepo Microservices with NestJS and KafkaJS
 * [Nx](https://nx.dev/)
 
 ## Credits
-[LogRocket](https://blog.logrocket.com/microservices-nestjs-kafka-typescript)
+[Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
+[Kevin Vogel](https://www.linkedin.com/in/hellokvn/)

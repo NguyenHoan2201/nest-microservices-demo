@@ -27,7 +27,7 @@ export class AppService implements OnModuleInit {
 
       if (user) {
         console.log(
-          `process payment for user ${user.firstName + ' ' + user.lastName} - amount: ${amount}`
+          `process payment for user ${user.fullName} - amount: ${amount}`
         );
       } else {
         throw new NotFoundException(`User with ID: ${userId} not found`)

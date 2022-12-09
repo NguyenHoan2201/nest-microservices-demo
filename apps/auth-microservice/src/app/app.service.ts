@@ -24,6 +24,26 @@ export class AppService implements OnModuleInit {
     return { message: 'Welcome to auth-microservice!' };
   }
 
+  async validateUser(email: string, password: string): Promise<User> {
+    try {
+
+      const user: User = await lastValueFrom(
+        this.userClient.send(kafkaTopics.getUserByEmail, JSON.stringify({ email })
+        ).pipe(timeout(30000)));
+
+      if (user && user.password === password) {
+        console.log(
+          `login successful for: ${user.fullName}`
+        );
+        return user
+      }
+
+      throw new UnauthorizedException("Invalid Credentials");
+    } catch (error) {
+      Logger.error(JSON.stringify(error));
+    }
+  }
+
   async login(loginUserDto: LoginUserDto) {
     try {
 
@@ -37,13 +57,13 @@ export class AppService implements OnModuleInit {
 
       if (user && user.password === password) {
         console.log(
-          `login successful for: ${user.firstName + ' ' + user.lastName}`
+          `login successful for: ${user.fullName}`
         );
 
         const payload = {
           sub: user.id,
           email: user.email,
-          name: user.firstName + " " + user.lastName,
+          name: user.fullName,
         };
 
         // return this.jwtService.sign(payload);

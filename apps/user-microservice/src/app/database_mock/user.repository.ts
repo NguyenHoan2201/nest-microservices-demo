@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { userDatabase } from './user.database';
-import { User } from '@microservices-demo/shared/entities';
+import { UserMock } from './user.database';
 
 @Injectable()
 export class UsersRepository {
-    private readonly users: Map<number, User> = userDatabase;
+    private readonly users: Map<number, UserMock> = userDatabase;
 
-    save(user: User) {
+    save(user: UserMock) {
         const id = this.users.size + 1
         this.users.set(id, { ...user, id });
     }
@@ -15,8 +15,8 @@ export class UsersRepository {
         return this.users.get(id);
     }
 
-    findOneBy(inputObj: Partial<User>) {
-        let foundUser: User = null;
+    findOneBy(inputObj: Partial<UserMock>) {
+        let foundUser: UserMock = null;
 
         for (const [, user] of this.users) {
             switch (true) {

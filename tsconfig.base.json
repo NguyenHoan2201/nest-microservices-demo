@@ -18,7 +18,8 @@
       "@microservices-demo/shared": ["libs/shared/src/index.ts"],
       "@microservices-demo/shared/dto": ["libs/shared/src/lib/dto/index.ts"],
       "@microservices-demo/shared/entities": ["libs/shared/src/lib/entities/index.ts"],
-      "@microservices-demo/shared/topics": ["libs/shared/src/lib/topics/index.ts"],
+      "@microservices-demo/shared/interfaces": ["libs/shared/src/lib/interfaces/index.ts"],
+      "@microservices-demo/shared/topics": ["libs/shared/src/lib/topics/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
