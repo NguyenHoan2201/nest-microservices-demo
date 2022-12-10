@@ -1,12 +1,5 @@
-import {
-    ConflictException,
-    HttpException,
-    HttpStatus,
-    Injectable,
-    Logger,
-    NotFoundException,
-    UnauthorizedException
-} from '@nestjs/common';
+import { Injectable, Logger, } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDto, UpdateUserDto } from "@microservices-demo/shared/dto";
@@ -29,12 +22,12 @@ export class UserService {
 
             return newUser;
         } catch (error) {
-            Logger.error(error);
             if (error?.code === PostgresErrorCodes.UniqueViolation) {
-                throw new ConflictException(
-                    `User with ${createUserDto.email} already exists`
+                throw new RpcException(
+                    `user with email: ${createUserDto.email} already exists`
                 );
             }
+            Logger.error(error);
         }
     }
 
@@ -46,7 +39,7 @@ export class UserService {
                 return foundUser;
             }
 
-            throw new UnauthorizedException("Invalid Credentials");
+            throw new RpcException(`user with email: ${email} not found`);
         } catch (error) {
             Logger.error(error);
         }
@@ -68,11 +61,11 @@ export class UserService {
                 return foundUser;
             }
 
-            throw new NotFoundException(
-                `User with id: ${id} does not exist on this server`
+            throw new RpcException(
+                `user with id: ${id} not found`
             );
         } catch (error) {
-            Logger.error(error.message);
+            Logger.error(error);
         }
     }
 

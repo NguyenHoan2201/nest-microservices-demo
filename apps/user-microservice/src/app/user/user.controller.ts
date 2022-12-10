@@ -1,8 +1,9 @@
-import { Controller, Get, ParseIntPipe } from "@nestjs/common";
+import { Controller, Get, ParseIntPipe, UseFilters } from "@nestjs/common";
 import { EventPattern, Payload, MessagePattern } from "@nestjs/microservices";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "@microservices-demo/shared/dto";
 import { kafkaTopics } from "@microservices-demo/shared/topics";
+import { ExceptionFilter } from "@microservices-demo/shared/filters";
 
 @Controller()
 export class UserController {
@@ -23,6 +24,7 @@ export class UserController {
     return this.userService.findOneById(userId);
   }
 
+  @UseFilters(new ExceptionFilter())
   @MessagePattern(kafkaTopics.getUserByEmail)
   handleGetUserByEmail(@Payload('email') email: string) {
     return this.userService.findOneByEmail(email);

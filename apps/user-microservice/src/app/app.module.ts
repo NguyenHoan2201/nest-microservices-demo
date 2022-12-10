@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
@@ -6,7 +7,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { User } from '@microservices-demo/shared/entities';
-import configuration from '../config/configuration';
+import configuration from './config/configuration';
+import { AllExceptionsFilter } from '@microservices-demo/shared/filters';
 
 @Module({
   imports: [
@@ -38,7 +40,13 @@ import configuration from '../config/configuration';
     UserModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) { }

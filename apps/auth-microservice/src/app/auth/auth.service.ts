@@ -3,9 +3,8 @@ import {
     Injectable,
     Logger,
     OnModuleInit,
-    UnauthorizedException
 } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientKafka, RpcException } from '@nestjs/microservices';
 import { lastValueFrom, timeout } from 'rxjs';
 // import { JwtService } from "@nestjs/jwt";
 import { LoginUserDto } from '@microservices-demo/shared/dto';
@@ -34,7 +33,7 @@ export class AuthService implements OnModuleInit {
                 return user
             }
 
-            throw new UnauthorizedException("Invalid Credentials");
+            throw new RpcException("Invalid Credentials");
         } catch (error) {
             Logger.error(JSON.stringify(error));
         }
@@ -67,7 +66,7 @@ export class AuthService implements OnModuleInit {
                 return payload
 
             } else {
-                throw new UnauthorizedException('Invalid Credentials')
+                throw new RpcException("Invalid Credentials")
             }
 
         } catch (error) {

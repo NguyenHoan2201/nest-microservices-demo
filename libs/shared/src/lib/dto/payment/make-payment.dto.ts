@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 export class MakePaymentDto {
     @IsNotEmpty()
-    @IsNumber()
+    @IsUUID(4)
     userId: number;
 
     @IsNotEmpty()
