@@ -18,7 +18,6 @@ async function bootstrap() {
       },
     }
   );
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,7 +26,6 @@ async function bootstrap() {
       forbidUnknownValues: true,
     })
   );
-
   await app.listen();
 }
 

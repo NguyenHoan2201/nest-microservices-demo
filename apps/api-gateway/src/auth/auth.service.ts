@@ -1,15 +1,25 @@
-import { HttpException, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { lastValueFrom, timeout } from 'rxjs';
-import { CreateUserDto, LoginUserDto } from '@microservices-demo/shared/dto';
-import { kafkaTopics } from '@microservices-demo/shared/topics';
-import { User } from '@microservices-demo/shared/entities';
+import {
+    HttpException,
+    Inject,
+    Injectable,
+    Logger,
+    OnModuleInit
+} from "@nestjs/common";
+import { ClientKafka } from "@nestjs/microservices";
+import { lastValueFrom, timeout } from "rxjs";
+import { CreateUserDto, LoginUserDto } from "@microservices-demo/shared/dto";
+import { kafkaTopics } from "@microservices-demo/shared/topics";
+import { User } from "@microservices-demo/shared/entities";
 
 @Injectable()
 export class AuthService implements OnModuleInit {
     constructor(
         @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
     ) { }
+
+    onModuleInit() {
+        this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
+    };
 
     async createUser(createUserDto: CreateUserDto) {
         try {
@@ -35,16 +45,10 @@ export class AuthService implements OnModuleInit {
                 ).pipe(timeout(30000))
             );
 
-            console.log('===rx payload===', payload)
-
             return payload
         } catch (error) {
             Logger.error(error)
             throw new HttpException(error.message, 500)
         }
     }
-
-    onModuleInit() {
-        this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
-    };
 }

@@ -1,5 +1,5 @@
 import { Controller } from "@nestjs/common";
-import { EventPattern, Payload } from "@nestjs/microservices";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 import { MakePaymentDto } from "@microservices-demo/shared/dto";
 import { kafkaTopics } from "@microservices-demo/shared/topics"
 import { PaymentService } from "./payment.service";
@@ -9,8 +9,8 @@ export class PaymentController {
 
     constructor(private readonly paymentService: PaymentService) { }
 
-    @EventPattern(kafkaTopics.processPayment)
-    handleProcessPayment(@Payload() data: MakePaymentDto) {
-        this.paymentService.processPayment(data);
+    @MessagePattern(kafkaTopics.processPayment)
+    async handleProcessPayment(@Payload() data: MakePaymentDto) {
+        return await this.paymentService.processPayment(data);
     }
 }

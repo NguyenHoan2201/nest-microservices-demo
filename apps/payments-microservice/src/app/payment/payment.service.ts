@@ -4,12 +4,12 @@ import {
     Logger,
     NotFoundException,
     OnModuleInit
-} from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { MakePaymentDto } from '@microservices-demo/shared/dto';
-import { User } from '@microservices-demo/shared/entities';
-import { kafkaTopics } from '@microservices-demo/shared/topics'
-import { lastValueFrom, timeout } from 'rxjs';
+} from "@nestjs/common";
+import { ClientKafka } from "@nestjs/microservices";
+import { MakePaymentDto } from "@microservices-demo/shared/dto";
+import { User } from "@microservices-demo/shared/entities";
+import { kafkaTopics } from "@microservices-demo/shared/topics"
+import { lastValueFrom, timeout } from "rxjs";
 
 @Injectable()
 export class PaymentService implements OnModuleInit {
@@ -36,6 +36,8 @@ export class PaymentService implements OnModuleInit {
                 console.log(
                     `process payment for user ${user.fullName} - amount: ${amount}`
                 );
+
+                return { status: 'success' }
             } else {
                 throw new NotFoundException(`User with ID: ${id} not found`)
             }

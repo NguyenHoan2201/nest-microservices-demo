@@ -1,6 +1,6 @@
-import { MakePaymentDto } from '@microservices-demo/shared/dto';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { PaymentService } from './payment.service';
+import { MakePaymentDto } from "@microservices-demo/shared/dto";
+import { Body, Controller, HttpCode, Post } from "@nestjs/common";
+import { PaymentService } from "./payment.service";
 
 @Controller('payments')
 export class PaymentController {
@@ -8,7 +8,7 @@ export class PaymentController {
     
     @Post('pay')
     @HttpCode(200)
-    makePayment(@Body() makePaymentDto: MakePaymentDto) {
-        return this.paymentService.makePayment(makePaymentDto);
+    async makePayment(@Body() makePaymentDto: MakePaymentDto) {
+        return await this.paymentService.makePayment(makePaymentDto);
     }
 }

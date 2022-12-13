@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { RpcException } from '@nestjs/microservices';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { RpcException } from "@nestjs/microservices";
 // import { JwtService } from "@nestjs/jwt";
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from '@microservices-demo/shared/dto';
-import { User } from '@microservices-demo/shared/entities';
-import { PostgresErrorCodes } from '@microservices-demo/shared/interfaces';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from "@microservices-demo/shared/dto";
+import { User } from "@microservices-demo/shared/entities";
+import { PostgresErrorCodes } from "@microservices-demo/shared/interfaces";
 
 @Injectable()
 export class AuthService {
