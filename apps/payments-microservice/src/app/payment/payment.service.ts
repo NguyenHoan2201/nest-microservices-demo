@@ -14,21 +14,22 @@ import { lastValueFrom, timeout } from 'rxjs';
 @Injectable()
 export class PaymentService implements OnModuleInit {
     constructor(
-        @Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka
+        @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
     ) { }
 
-    getData(): { message: string } {
-        return { message: 'Welcome to payments-microservice!' };
+    onModuleInit() {
+        this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
     }
 
     async processPayment(makePaymentDto: MakePaymentDto) {
         try {
-            const { userId, amount } = makePaymentDto;
+            const { userId: id, amount } = makePaymentDto;
 
             console.log('process payment');
 
             const user: User = await lastValueFrom(
-                this.userClient.send(kafkaTopics.getUserByID, JSON.stringify({ userId })
+                this.authClient.send(
+                    kafkaTopics.getUserByID, { id }
                 ).pipe(timeout(30000)));
 
             if (user) {
@@ -36,15 +37,11 @@ export class PaymentService implements OnModuleInit {
                     `process payment for user ${user.fullName} - amount: ${amount}`
                 );
             } else {
-                throw new NotFoundException(`User with ID: ${userId} not found`)
+                throw new NotFoundException(`User with ID: ${id} not found`)
             }
 
         } catch (error) {
             Logger.error(error)
         }
-    }
-
-    onModuleInit() {
-        this.userClient.subscribeToResponseOf(kafkaTopics.getUserByID);
     }
 }

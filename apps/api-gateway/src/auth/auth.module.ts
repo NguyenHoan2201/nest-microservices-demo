@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { Module } from "@nestjs/common";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { AuthService } from './auth.service';
             clientId: 'auth',
             brokers: ['localhost:9092'],
           },
+          producerOnlyMode: true,
           consumer: {
             groupId: 'auth-consumer',
           },

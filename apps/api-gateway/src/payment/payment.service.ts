@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { MakePaymentDto } from '@microservices-demo/shared/dto';
 import { kafkaTopics } from '@microservices-demo/shared/topics'
@@ -10,6 +10,11 @@ export class PaymentService {
     ) { }
 
     makePayment(makePaymentDto: MakePaymentDto) {
-        this.paymentClient.emit(kafkaTopics.processPayment, JSON.stringify(makePaymentDto));
+        try {
+            this.paymentClient.emit(kafkaTopics.processPayment, { ...makePaymentDto });
+        } catch (error) {
+            Logger.error(error)
+            throw new HttpException(error.message, 500)
+        }
     }
 }

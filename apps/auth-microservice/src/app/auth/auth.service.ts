@@ -1,32 +1,26 @@
-import {
-    Inject,
-    Injectable,
-    Logger,
-    OnModuleInit,
-} from '@nestjs/common';
-import { ClientKafka, RpcException } from '@nestjs/microservices';
-import { lastValueFrom, timeout } from 'rxjs';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RpcException } from '@nestjs/microservices';
 // import { JwtService } from "@nestjs/jwt";
-import { LoginUserDto } from '@microservices-demo/shared/dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from '@microservices-demo/shared/dto';
 import { User } from '@microservices-demo/shared/entities';
-import { kafkaTopics } from '@microservices-demo/shared/topics';
+import { PostgresErrorCodes } from '@microservices-demo/shared/interfaces';
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService {
 
     constructor(
-        @Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka,
+        @InjectRepository(User) private readonly userRepository: Repository<User>
         // private jwtService: JwtService,
     ) { }
 
     async validateUser(email: string, password: string): Promise<User> {
         try {
 
-            const user: User = await lastValueFrom(
-                this.userClient.send(kafkaTopics.getUserByEmail, JSON.stringify({ email })
-                ).pipe(timeout(30000)));
+            const user = await this.userRepository.findOneBy({ email })
 
-            if (user && user.password === password) {
+            if (user && await user.isValidPassword(password)) {
                 console.log(
                     `login successful for: ${user.fullName}`
                 );
@@ -46,13 +40,12 @@ export class AuthService implements OnModuleInit {
 
             console.log('login user');
 
-            const user: User = await lastValueFrom(
-                this.userClient.send(kafkaTopics.getUserByEmail, JSON.stringify({ email })
-                ).pipe(timeout(30000)));
+            const user = await this.userRepository.findOneBy({ email })
 
-            if (user && user.password === password) {
+            if (user && user.isValidPassword(password)) {
+
                 console.log(
-                    `login successful for: ${user.fullName}`
+                    user, '========', `login successful for: ${user.fullName}`
                 );
 
                 const payload = {
@@ -63,7 +56,7 @@ export class AuthService implements OnModuleInit {
 
                 // return this.jwtService.sign(payload);
 
-                return payload
+                return { ...payload }
 
             } else {
                 throw new RpcException("Invalid Credentials")
@@ -74,8 +67,74 @@ export class AuthService implements OnModuleInit {
         }
     }
 
-    onModuleInit() {
-        this.userClient.subscribeToResponseOf(kafkaTopics.getUserByEmail);
+    async createUser(createUserDto: CreateUserDto): Promise<User> {
+        try {
+            const newUser = this.userRepository.create(createUserDto);
+
+            await this.userRepository.save(newUser);
+
+            return newUser;
+        } catch (error) {
+            if (error?.code === PostgresErrorCodes.UniqueViolation) {
+                throw new RpcException(
+                    `user with email: ${createUserDto.email} already exists`
+                );
+            }
+            Logger.error(error);
+        }
     }
 
+    async findOneByEmail(email: string): Promise<User> {
+        try {
+            const foundUser = await this.userRepository.findOneBy({ email });
+
+            if (foundUser) {
+                return foundUser;
+            };
+
+            throw new RpcException(`user with email: ${email} not found`);
+        } catch (error) {
+            Logger.error(error);
+        }
+    }
+
+    async findOneById(id: string): Promise<Partial<User>> {
+        try {
+            const foundUser = await this.userRepository.findOne({
+                select: {
+                    id: true,
+                    email: true,
+                    lastLogin: true,
+                    roles: true,
+                },
+                where: { id },
+            });
+
+            if (foundUser) {
+                return foundUser;
+            }
+
+            throw new RpcException(
+                `user with id: ${id} not found`
+            );
+        } catch (error) {
+            Logger.error(error);
+        }
+    }
+
+    async update(id: string, updateUserDto: UpdateUserDto) {
+        try {
+            await this.userRepository.update(id, updateUserDto);
+        } catch (error) {
+            Logger.error(error);
+        }
+    }
+
+    async delete(id: string) {
+        try {
+            await this.userRepository.delete(id);
+        } catch (error) {
+            Logger.error(error);
+        }
+    }
 }
