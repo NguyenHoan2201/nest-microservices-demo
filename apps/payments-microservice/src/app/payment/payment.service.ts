@@ -27,8 +27,8 @@ export class PaymentService implements OnModuleInit {
 
             console.log('process payment');
 
-            const user: User = await lastValueFrom(
-                this.authClient.send(
+            const user = await lastValueFrom(
+                this.authClient.send<User>(
                     kafkaTopics.getUserByID, { id }
                 ).pipe(timeout(30000)));
 

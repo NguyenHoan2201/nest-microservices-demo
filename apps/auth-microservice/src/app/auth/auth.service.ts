@@ -44,9 +44,7 @@ export class AuthService {
 
             if (user && user.isValidPassword(password)) {
 
-                console.log(
-                    user, '========', `login successful for: ${user.fullName}`
-                );
+                console.log(`login successful for: ${user.fullName}`);
 
                 const payload = {
                     sub: user.id,
@@ -56,7 +54,7 @@ export class AuthService {
 
                 // return this.jwtService.sign(payload);
 
-                return { ...payload }
+                return payload
 
             } else {
                 throw new RpcException("Invalid Credentials")
@@ -104,6 +102,7 @@ export class AuthService {
                 select: {
                     id: true,
                     email: true,
+                    fullName: true,
                     lastLogin: true,
                     roles: true,
                 },
