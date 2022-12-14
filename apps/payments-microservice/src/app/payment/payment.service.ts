@@ -3,6 +3,7 @@ import {
     Injectable,
     Logger,
     NotFoundException,
+    OnModuleDestroy,
     OnModuleInit
 } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
@@ -12,13 +13,20 @@ import { kafkaTopics } from "@microservices-demo/shared/topics"
 import { lastValueFrom, timeout } from "rxjs";
 
 @Injectable()
-export class PaymentService implements OnModuleInit {
+export class PaymentService implements OnModuleInit, OnModuleDestroy {
     constructor(
         @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
     ) { }
 
-    onModuleInit() {
+    async onModuleInit() {
+        this.authClient.subscribeToResponseOf(kafkaTopics.createUser);
+        this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
         this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
+        await this.authClient.connect()
+    };
+
+    async onModuleDestroy() {
+        await this.authClient.close()
     }
 
     async processPayment(makePaymentDto: MakePaymentDto) {

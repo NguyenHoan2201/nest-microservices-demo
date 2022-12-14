@@ -12,7 +12,7 @@ import { PaymentController } from "./payment.controller";
         options: {
           client: {
             clientId: 'payment',
-            brokers: ['localhost:9092'],
+            brokers: ['localhost:29092'],
           },
           consumer: {
             groupId: 'payment-consumer',

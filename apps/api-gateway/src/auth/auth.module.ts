@@ -12,7 +12,7 @@ import { AuthService } from "./auth.service";
         options: {
           client: {
             clientId: 'auth',
-            brokers: ['localhost:9092'],
+            brokers: ['localhost:29092'],
           },
           consumer: {
             groupId: 'auth-consumer',

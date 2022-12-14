@@ -3,6 +3,7 @@ import {
     Inject,
     Injectable,
     Logger,
+    OnApplicationShutdown,
     OnModuleInit
 } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
@@ -12,14 +13,21 @@ import { kafkaTopics } from "@microservices-demo/shared/topics";
 import { User } from "@microservices-demo/shared/entities";
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService implements OnModuleInit, OnApplicationShutdown {
     constructor(
         @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
     ) { }
 
-    onModuleInit() {
+    async onModuleInit() {
+        this.authClient.subscribeToResponseOf(kafkaTopics.createUser);
         this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
+        this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
+        await this.authClient.connect()
     };
+
+    async onApplicationShutdown() {
+        await this.authClient.close()
+    }
 
     async createUser(createUserDto: CreateUserDto) {
         try {

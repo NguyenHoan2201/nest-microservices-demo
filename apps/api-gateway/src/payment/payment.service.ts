@@ -3,6 +3,7 @@ import {
     Inject,
     Injectable,
     Logger,
+    OnApplicationShutdown,
     OnModuleInit
 } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
@@ -11,13 +12,18 @@ import { MakePaymentDto } from "@microservices-demo/shared/dto";
 import { kafkaTopics } from "@microservices-demo/shared/topics"
 
 @Injectable()
-export class PaymentService implements OnModuleInit {
+export class PaymentService implements OnModuleInit, OnApplicationShutdown {
     constructor(
         @Inject('PAYMENT_MICROSERVICE') private readonly paymentClient: ClientKafka
     ) { }
 
-    onModuleInit() {
-        this.paymentClient.subscribeToResponseOf(kafkaTopics.processPayment)
+    async onModuleInit() {
+        this.paymentClient.subscribeToResponseOf(kafkaTopics.processPayment);
+        await this.paymentClient.connect()
+    }
+
+    async onApplicationShutdown() {
+        await this.paymentClient.close()
     }
 
     async makePayment(makePaymentDto: MakePaymentDto) {
@@ -29,6 +35,7 @@ export class PaymentService implements OnModuleInit {
             );
 
             return paymentStatus
+
         } catch (error) {
             Logger.error(error)
             throw new HttpException(error.message, 500)
