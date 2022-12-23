@@ -7,9 +7,8 @@ Monorepo Microservices with NestJS and KafkaJS
 * [TypeScript](https://www.typescriptlang.org/)
 * [PostgreSQL](https://www.postgresql.org/)
 * [KafkaJS](https://kafka.js.org/)
-* [Kafdrop](https://github.com/obsidiandynamics/kafdrop)
 * [Nx](https://nx.dev/)
 
 ## Credits
-[Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
-[Kevin Vogel](https://www.linkedin.com/in/hellokvn/)
+* [Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
+* [Kevin Vogel](https://www.linkedin.com/in/hellokvn/)
