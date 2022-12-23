@@ -21,7 +21,6 @@ export class AuthService implements OnModuleInit, OnApplicationShutdown {
     async onModuleInit() {
         this.authClient.subscribeToResponseOf(kafkaTopics.createUser);
         this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
-        this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
         await this.authClient.connect()
     };
 

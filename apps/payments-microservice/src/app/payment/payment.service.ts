@@ -19,8 +19,6 @@ export class PaymentService implements OnModuleInit, OnModuleDestroy {
     ) { }
 
     async onModuleInit() {
-        this.authClient.subscribeToResponseOf(kafkaTopics.createUser);
-        this.authClient.subscribeToResponseOf(kafkaTopics.loginUser);
         this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
         await this.authClient.connect()
     };

@@ -11,11 +11,11 @@ import { PaymentService } from './payment.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'auth',
+            clientId: 'payment-auth',
             brokers: ['localhost:29092'],
           },
           consumer: {
-            groupId: 'auth-consumer',
+            groupId: 'payment-auth-consumer',
           },
         },
       },
