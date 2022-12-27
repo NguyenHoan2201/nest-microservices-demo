@@ -1,6 +1,10 @@
-import { Body, Controller, HttpCode, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, Post, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateUserDto, LoginUserDto } from "@microservices-demo/shared/dto"
+import { CreateUserDto } from "@microservices-demo/shared/dto"
+import { SkipAuth } from "./decorators/skip-auth.decorator";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { User } from "@microservices-demo/shared/entities";
+import { UserDecorator } from "./decorators/user.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +18,18 @@ export class AuthController {
 
     @Post('login')
     @HttpCode(200)
-    async loginUser(@Body() loginUserDto: LoginUserDto) {
-        return await this.authService.login(loginUserDto);
+    @SkipAuth()
+    @UseGuards(LocalAuthGuard)
+    async loginUser(@UserDecorator() user: User,
+        // @Res({ passthrough: true }) res: Response
+    ) {
+        const token = await this.authService.login(user);
+
+        return {
+            status: 'success',
+            statusCode: 200,
+            message: 'Login Successful',
+            token
+        }
     }
 }

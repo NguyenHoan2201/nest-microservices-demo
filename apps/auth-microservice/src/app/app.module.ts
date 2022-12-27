@@ -22,11 +22,11 @@ import configuration from "./config/configuration";
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: "postgres",
-        host: configService.get<string>("DB_HOST"),
-        port: configService.get<number>("DB_PORT"),
-        username: configService.get<string>("DB_USERNAME"),
-        password: configService.get<string>("DB_PASSWORD"),
-        database: configService.get<string>("DB_DATABASE"),
+        host: configService.get<string>("database.host"),
+        port: configService.get<number>("database.port"),
+        username: configService.get<string>("database.username"),
+        password: configService.get<string>("database.password"),
+        database: configService.get<string>("database.dbname"),
         entities: [User],
         migrations: ["dist/migrations/*.js"],
         migrationsTableName: "migrations_history",
@@ -34,7 +34,7 @@ import configuration from "./config/configuration";
         ssl: {
           rejectUnauthorized: false,
         },
-        connectTimeoutMS: 2000,
+        connectTimeoutMS: 20000,
       }),
       inject: [ConfigService],
     }),

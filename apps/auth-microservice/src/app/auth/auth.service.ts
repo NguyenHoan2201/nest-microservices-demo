@@ -2,8 +2,11 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { RpcException } from "@nestjs/microservices";
-// import { JwtService } from "@nestjs/jwt";
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from "@microservices-demo/shared/dto";
+import { 
+    CreateUserDto, 
+    LoginUserDto, 
+    UpdateUserDto 
+} from "@microservices-demo/shared/dto";
 import { User } from "@microservices-demo/shared/entities";
 import { PostgresErrorCodes } from "@microservices-demo/shared/interfaces";
 
@@ -12,18 +15,18 @@ export class AuthService {
 
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>
-        // private jwtService: JwtService,
     ) { }
 
-    async validateUser(email: string, password: string): Promise<User> {
+    async validateUser(loginUserDto: LoginUserDto): Promise<User> {
         try {
 
-            const user = await this.userRepository.findOneBy({ email })
+            const { email, password } = loginUserDto;
+
+            const user = await this.userRepository.findOneBy({ email });
 
             if (user && await user.isValidPassword(password)) {
-                console.log(
-                    `login successful for: ${user.fullName}`
-                );
+                user.lastLogin = new Date();
+                await this.userRepository.save(user);
                 return user
             }
 
@@ -33,35 +36,11 @@ export class AuthService {
         }
     }
 
-    async login(loginUserDto: LoginUserDto) {
+    async validateJwt(sub: string) {
         try {
-
-            const { email, password } = loginUserDto;
-
-            console.log('login user');
-
-            const user = await this.userRepository.findOneBy({ email })
-
-            if (user && user.isValidPassword(password)) {
-
-                console.log(`login successful for: ${user.fullName}`);
-
-                const payload = {
-                    sub: user.id,
-                    email: user.email,
-                    name: user.fullName,
-                };
-
-                // return this.jwtService.sign(payload);
-
-                return payload
-
-            } else {
-                throw new RpcException("Invalid Credentials")
-            }
-
+            return this.findOneById(sub)
         } catch (error) {
-            Logger.error(error)
+            Logger.error(JSON.stringify(error));
         }
     }
 

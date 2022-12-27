@@ -14,9 +14,14 @@ export class AuthController {
         return await this.authService.createUser(data);
     }
 
-    @MessagePattern(kafkaTopics.loginUser)
-    async handleLoginUser(@Payload() data: LoginUserDto) {
-        return await this.authService.login(data);
+    @MessagePattern(kafkaTopics.validateUser)
+    async handleValidateUser(@Payload() data: LoginUserDto) {
+        return await this.authService.validateUser(data);
+    }
+
+    @MessagePattern(kafkaTopics.validateJwt)
+    async handleValidateJwt(@Payload() data: EntityIDDto) {
+        return await this.authService.validateJwt(data.id);
     }
 
     @MessagePattern(kafkaTopics.getUserByID)
