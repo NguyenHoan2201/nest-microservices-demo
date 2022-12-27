@@ -11,38 +11,11 @@ import { User } from "@microservices-demo/shared/entities";
 import { PostgresErrorCodes } from "@microservices-demo/shared/interfaces";
 
 @Injectable()
-export class AuthService {
+export class UserService {
 
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>
     ) { }
-
-    async validateUser(loginUserDto: LoginUserDto): Promise<User> {
-        try {
-
-            const { email, password } = loginUserDto;
-
-            const user = await this.userRepository.findOneBy({ email });
-
-            if (user && await user.isValidPassword(password)) {
-                user.lastLogin = new Date();
-                await this.userRepository.save(user);
-                return user
-            }
-
-            throw new RpcException("Invalid Credentials");
-        } catch (error) {
-            Logger.error(JSON.stringify(error));
-        }
-    }
-
-    async validateJwt(sub: string) {
-        try {
-            return this.findOneById(sub)
-        } catch (error) {
-            Logger.error(JSON.stringify(error));
-        }
-    }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         try {
@@ -60,18 +33,23 @@ export class AuthService {
             Logger.error(error);
         }
     }
-
-    async findOneByEmail(email: string): Promise<User> {
+    
+    async validateUser(loginUserDto: LoginUserDto): Promise<User> {
         try {
-            const foundUser = await this.userRepository.findOneBy({ email });
 
-            if (foundUser) {
-                return foundUser;
-            };
+            const { email, password } = loginUserDto;
 
-            throw new RpcException(`user with email: ${email} not found`);
+            const user = await this.userRepository.findOneBy({ email });
+
+            if (user && await user.isValidPassword(password)) {
+                user.lastLogin = new Date();
+                await this.userRepository.save(user);
+                return user
+            }
+
+            throw new RpcException("Invalid Credentials");
         } catch (error) {
-            Logger.error(error);
+            Logger.error(JSON.stringify(error));
         }
     }
 

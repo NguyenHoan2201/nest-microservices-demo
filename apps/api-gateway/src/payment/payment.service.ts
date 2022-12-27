@@ -1,5 +1,5 @@
 import {
-    HttpException,
+    GatewayTimeoutException,
     Inject,
     Injectable,
     Logger,
@@ -38,7 +38,7 @@ export class PaymentService implements OnModuleInit, OnApplicationShutdown {
 
         } catch (error) {
             Logger.error(error)
-            throw new HttpException(error.message, 500)
+            throw new GatewayTimeoutException(error)
         }
     }
 }

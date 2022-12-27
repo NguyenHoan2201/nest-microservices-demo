@@ -15,16 +15,16 @@ import { lastValueFrom, timeout } from "rxjs";
 @Injectable()
 export class PaymentService implements OnModuleInit, OnModuleDestroy {
     constructor(
-        @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka
+        @Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka
     ) { }
 
     async onModuleInit() {
-        this.authClient.subscribeToResponseOf(kafkaTopics.getUserByID);
-        await this.authClient.connect()
+        this.userClient.subscribeToResponseOf(kafkaTopics.getUser);
+        await this.userClient.connect()
     };
 
     async onModuleDestroy() {
-        await this.authClient.close()
+        await this.userClient.close()
     }
 
     async processPayment(makePaymentDto: MakePaymentDto) {
@@ -34,9 +34,9 @@ export class PaymentService implements OnModuleInit, OnModuleDestroy {
             console.log('process payment');
 
             const user = await lastValueFrom(
-                this.authClient.send<User>(
-                    kafkaTopics.getUserByID, { id }
-                ).pipe(timeout(30000)));
+                this.userClient.send<User>(
+                    kafkaTopics.getUser, { id }
+                ).pipe(timeout(20000)));
 
             if (user) {
                 console.log(

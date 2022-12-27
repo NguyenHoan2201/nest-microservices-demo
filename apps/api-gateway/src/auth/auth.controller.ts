@@ -1,10 +1,11 @@
-import { Body, Controller, HttpCode, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpCode, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "@microservices-demo/shared/dto"
 import { SkipAuth } from "./decorators/skip-auth.decorator";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { User } from "@microservices-demo/shared/entities";
 import { UserDecorator } from "./decorators/user.decorator";
+import { SuccessResponse } from "../utils/successResponse";
 
 @Controller('auth')
 export class AuthController {
@@ -25,11 +26,6 @@ export class AuthController {
     ) {
         const token = await this.authService.login(user);
 
-        return {
-            status: 'success',
-            statusCode: 200,
-            message: 'Login Successful',
-            token
-        }
+        return new SuccessResponse(200, 'login successful', token)
     }
 }

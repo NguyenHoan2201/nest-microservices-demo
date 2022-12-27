@@ -1,7 +1,7 @@
 {
-  "name": "auth-microservice",
+  "name": "user-microservice",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/auth-microservice/src",
+  "sourceRoot": "apps/user-microservice/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -10,10 +10,10 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/auth-microservice",
-        "main": "apps/auth-microservice/src/main.ts",
-        "tsConfig": "apps/auth-microservice/tsconfig.app.json",
-        "assets": ["apps/auth-microservice/src/assets"]
+        "outputPath": "dist/apps/user-microservice",
+        "main": "apps/user-microservice/src/main.ts",
+        "tsConfig": "apps/user-microservice/tsconfig.app.json",
+        "assets": ["apps/user-microservice/src/assets"]
       },
       "configurations": {
         "production": {
@@ -22,8 +22,8 @@
           "inspect": false,
           "fileReplacements": [
             {
-              "replace": "apps/auth-microservice/src/environments/environment.ts",
-              "with": "apps/auth-microservice/src/environments/environment.prod.ts"
+              "replace": "apps/user-microservice/src/environments/environment.ts",
+              "with": "apps/user-microservice/src/environments/environment.prod.ts"
             }
           ]
         }
@@ -32,11 +32,11 @@
     "serve": {
       "executor": "@nrwl/js:node",
       "options": {
-        "buildTarget": "auth-microservice:build"
+        "buildTarget": "user-microservice:build"
       },
       "configurations": {
         "production": {
-          "buildTarget": "auth-microservice:build:production"
+          "buildTarget": "user-microservice:build:production"
         }
       }
     },
@@ -44,14 +44,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/auth-microservice/**/*.ts"]
+        "lintFilePatterns": ["apps/user-microservice/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/auth-microservice/jest.config.ts",
+        "jestConfig": "apps/user-microservice/jest.config.ts",
         "passWithNoTests": true
       }
     }

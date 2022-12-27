@@ -7,15 +7,15 @@ import { PaymentService } from './payment.service';
   imports: [
     ClientsModule.register([
       {
-        name: 'AUTH_MICROSERVICE',
+        name: 'USER_MICROSERVICE',
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'payment-auth',
+            clientId: 'payment-user',
             brokers: ['localhost:29092'],
           },
           consumer: {
-            groupId: 'payment-auth-consumer',
+            groupId: 'payment-user-consumer',
           },
         },
       },

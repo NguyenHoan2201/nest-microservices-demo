@@ -11,15 +11,15 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
   imports: [
     ClientsModule.register([
       {
-        name: 'AUTH_MICROSERVICE',
+        name: 'USER_MICROSERVICE',
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'auth',
+            clientId: 'user',
             brokers: ['localhost:29092'],
           },
           consumer: {
-            groupId: 'auth-consumer',
+            groupId: 'user-consumer',
           },
         },
       },
@@ -35,9 +35,9 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
         },
         signOptions: {
           algorithm: "RS256",
-          audience: "auth-microservice",
+          audience: "microservices-demo",
           expiresIn: "1h",
-          issuer: "auth-microservice",
+          issuer: "microservices-demo",
         },
       }),
     }),

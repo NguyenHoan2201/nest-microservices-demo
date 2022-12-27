@@ -1,5 +1,5 @@
 import {
-    HttpException,
+    GatewayTimeoutException,
     Inject,
     Injectable,
     Logger,
@@ -17,35 +17,34 @@ import { User } from "@microservices-demo/shared/entities";
 @Injectable()
 export class AuthService implements OnModuleInit, OnApplicationShutdown {
     constructor(
-        @Inject('AUTH_MICROSERVICE') private readonly authClient: ClientKafka,
+        @Inject('USER_MICROSERVICE') private readonly userClient: ClientKafka,
         private jwtService: JwtService,
     ) { }
 
     async onModuleInit() {
-        this.authClient.subscribeToResponseOf(kafkaTopics.createUser);
-        this.authClient.subscribeToResponseOf(kafkaTopics.validateJwt);
-        this.authClient.subscribeToResponseOf(kafkaTopics.validateUser);
-        await this.authClient.connect()
+        this.userClient.subscribeToResponseOf(kafkaTopics.createUser);
+        this.userClient.subscribeToResponseOf(kafkaTopics.getUser);
+        this.userClient.subscribeToResponseOf(kafkaTopics.validateUser);
+        await this.userClient.connect()
     };
 
     async onApplicationShutdown() {
-        await this.authClient.close()
+        await this.userClient.close()
     }
 
     async createUser(createUserDto: CreateUserDto) {
         try {
             const newUser = await lastValueFrom(
-                this.authClient.send<User>(
+                this.userClient.send<User>(
                     kafkaTopics.createUser, { ...createUserDto }
-                ).pipe(timeout(30000))
+                ).pipe(timeout(20000))
             );
 
             return newUser
         } catch (error) {
             Logger.error(error)
-            throw new HttpException(error.message, 500)
+            throw new GatewayTimeoutException(error)
         }
-
     }
 
     async login(user: User) {
@@ -69,24 +68,24 @@ export class AuthService implements OnModuleInit, OnApplicationShutdown {
     async validateUser(email: string, password: string) {
         try {
             const user = await lastValueFrom(
-                this.authClient.send<User>(
+                this.userClient.send<User>(
                     kafkaTopics.validateUser, { email, password }
-                ).pipe(timeout(30000))
+                ).pipe(timeout(20000))
             );
 
             return user
         } catch (error) {
             Logger.error(error)
-            throw new HttpException(error.message, 500)
+            throw new GatewayTimeoutException(error)
         }
     };
 
     async validateJwt(sub: string) {
         try {
             const user = await lastValueFrom(
-                this.authClient.send<User>(
-                    kafkaTopics.validateJwt, { id: sub }
-                ).pipe(timeout(30000))
+                this.userClient.send<User>(
+                    kafkaTopics.getUser, { id: sub }
+                ).pipe(timeout(20000))
             );
 
             if (user) {
@@ -96,6 +95,7 @@ export class AuthService implements OnModuleInit, OnApplicationShutdown {
             throw new UnauthorizedException("Invalid Credentials");
         } catch (error) {
             Logger.error(JSON.stringify(error));
+            throw new GatewayTimeoutException(error)
         }
     }
 }

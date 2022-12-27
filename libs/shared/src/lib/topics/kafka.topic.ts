@@ -1,7 +1,6 @@
 export enum kafkaTopics {
     createUser = 'create_user',
-    getUserByID = 'get_user_by_id',
-    processPayment = 'process_payment',
+    getUser = 'get_user',
     validateUser = 'validate_user',
-    validateJwt = 'validate_jwt'
+    processPayment = 'process_payment',
 }
