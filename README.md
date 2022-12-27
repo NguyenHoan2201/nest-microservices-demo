@@ -1,6 +1,6 @@
 # microservices-demo
 
-Monorepo Microservices with NestJS and KafkaJS
+Monorepo managed with nx workspace for microservices architecture built with NestJS and Kafka
 
 ## Tech Stack
 * [NestJS](https://docs.nestjs.com)
