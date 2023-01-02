@@ -10,4 +10,11 @@ export default () => ({
         ).toString("ascii"),
         secret: process.env.ACCESS_TOKEN_SECRET,
     },
+
+    redis: {
+        hostUrl: process.env.REDIS_HOST_URL,
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+        dbname: process.env.REDIS_DATABASE_NAME,
+      },
 });
