@@ -29,7 +29,6 @@ The project currently consists of the following components:
 The application could be easily scaled, and more microservices added as required.
 
 ![Architecture Diagram](AD-Kafka.png)
-<<<<<<< HEAD
 
 ## Running the individual component
 
@@ -79,9 +78,6 @@ nx g @nrwl/nest:app microservice-name
 ### Others
 
 <input type="checkbox" disabled /> Add more services to docker-compose to dockerize the whole app
-
-=======
->>>>>>> a4eddd72bcb69d1c6266a8ea08b87fcffdeb323e
 
 ## Credits
 * [Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
