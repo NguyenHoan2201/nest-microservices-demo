@@ -20,7 +20,7 @@ The first microservice (user-microservice) manages user-related requests sent fr
 
 The application could be easily scaled, and more microservices added as required.
 
-
+![Architecture Diagram](AD-Kafka.png)
 
 ## Credits
 * [Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
