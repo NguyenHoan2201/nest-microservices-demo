@@ -73,7 +73,7 @@ nx g @nrwl/nest:app microservice-name
 
 <input type="checkbox" disabled /> Add more features to payment-microservice
 
-<input type="checkbox" disabled /> Add more microservices
+- [ ] Add more microservices
 
 ### Others
 
