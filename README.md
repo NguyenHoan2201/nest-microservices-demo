@@ -47,37 +47,37 @@ nx g @nrwl/nest:app microservice-name
 
 ### Additional Features
 
-<input type="checkbox" disabled /> Add password change and reset options
+- [ ] Add password change and reset options
 
-<input type="checkbox" disabled /> Add logout option
+- [ ] Add logout option
 
-<input type="checkbox" disabled /> Add support for refresh token
+- [ ] Add support for refresh token
 
 ### API Gateway
 
-<input type="checkbox" disabled /> Integrate Swagger to document endpoints
+- [ ] Integrate Swagger to document endpoints
 
-<input type="checkbox" disabled /> Add Unit Tests
+- [ ] Add Unit Tests
 
-<input type="checkbox" disabled /> Improve Logging
+- [ ] Improve Logging
 
-<input type="checkbox" disabled /> Improve Error handling between microservices
+- [ ] Improve Error handling between microservices
 
-<input type="checkbox" disabled /> Add health checks
+- [ ] Add health checks
 
 ### Microservices
 
-<input type="checkbox" disabled /> Integrate database for payments-microservice
+- [ ] Integrate database for payments-microservice
 
-<input type="checkbox" disabled /> Setup database migration for each microservice with database integrations
+- [ ] Setup database migration for each microservice with database integrations
 
-<input type="checkbox" disabled /> Add more features to payment-microservice
+- [ ] Add more features to payment-microservice
 
 - [ ] Add more microservices
 
 ### Others
 
-<input type="checkbox" disabled /> Add more services to docker-compose to dockerize the whole app
+- [ ] Add more services to docker-compose to dockerize the whole app
 
 ## Credits
 * [Vijit Ail](https://www.linkedin.com/in/vijit-ail-376885179)
