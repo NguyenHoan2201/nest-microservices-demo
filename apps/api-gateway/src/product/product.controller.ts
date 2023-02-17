@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { ProductService } from "./product.service";
+import { CreateProductDto } from "@microservices-demo/shared/dto";
+import { UpdateProductDto } from "@microservices-demo/shared/dto";
+import { SuccessResponse } from "../utils/successResponse";
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -13,8 +14,11 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  async findAll() {
+    
+    const data = await this.productService.findAll();
+
+    return new SuccessResponse(200, 'all products', data)
   }
 
   @Get(':id')

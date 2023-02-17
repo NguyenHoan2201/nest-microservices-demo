@@ -26,6 +26,9 @@
       "@microservices-demo/shared/interfaces": [
         "libs/shared/src/lib/interfaces/index.ts"
       ],
+      "@microservices-demo/shared/schemas": [
+        "libs/shared/src/lib/schemas/index.ts"
+      ],
       "@microservices-demo/shared/topics": [
         "libs/shared/src/lib/topics/index.ts"
       ]

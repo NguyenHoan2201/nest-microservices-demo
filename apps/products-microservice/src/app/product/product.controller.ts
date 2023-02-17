@@ -1,35 +1,36 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Controller } from "@nestjs/common";
+import { MessagePattern, Payload } from "@nestjs/microservices";
+import { ProductService } from "./product.service";
+import { CreateProductDto } from "@microservices-demo/shared/dto";
+import { UpdateProductDto } from "@microservices-demo/shared/dto";
+import { kafkaTopics } from "@microservices-demo/shared/topics"
 
 @Controller()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @MessagePattern('createProduct')
-  create(@Payload() createProductDto: CreateProductDto) {
+  handleCreateProduct(@Payload() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
-  @MessagePattern('findAllProduct')
-  findAll() {
+  @MessagePattern(kafkaTopics.getAllProducts)
+  handleGetAllProducts() {
     return this.productService.findAll();
   }
 
   @MessagePattern('findOneProduct')
-  findOne(@Payload() id: number) {
+  handleGetProduct(@Payload() id: number) {
     return this.productService.findOne(id);
   }
 
   @MessagePattern('updateProduct')
-  update(@Payload() updateProductDto: UpdateProductDto) {
+  handleUpdateProduct(@Payload() updateProductDto: UpdateProductDto) {
     return this.productService.update(updateProductDto.id, updateProductDto);
   }
 
   @MessagePattern('removeProduct')
-  remove(@Payload() id: number) {
+  handleDeleteProduct(@Payload() id: number) {
     return this.productService.remove(id);
   }
 }

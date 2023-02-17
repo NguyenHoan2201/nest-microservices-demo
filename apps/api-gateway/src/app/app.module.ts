@@ -12,6 +12,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "../auth/auth.module";
 import { PaymentModule } from "../payment/payment.module";
+import { ProductModule } from "../product/product.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
@@ -45,7 +46,8 @@ import configuration from "./config/configuration";
       limit: 10,
     }),
     AuthModule,
-    PaymentModule
+    PaymentModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [

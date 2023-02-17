@@ -1,15 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { CreateProductDto } from "@microservices-demo/shared/dto";
+import { UpdateProductDto } from "@microservices-demo/shared/dto";
+import { Product, ProductDocument } from "@microservices-demo/shared/schemas";
 
 @Injectable()
 export class ProductService {
+
+  constructor(
+    @InjectModel(Product.name) private readonly productModel: Model<ProductDocument>
+  ) { }
+
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new product';
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    try {
+      return (await this.productModel.find({}, 'name description price stock').exec()).map(product => ({
+        id: product._id._id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock
+      }));
+    } catch (error) {
+      Logger.error(JSON.stringify(error));
+    }
   }
 
   findOne(id: number) {
