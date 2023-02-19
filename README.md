@@ -21,13 +21,15 @@ The project currently consists of the following components:
 
 1. API Gateway (AG): this sits in front of all microservices and listens to requests from external client, it calls the appropriate microservice(s) to process the request and sends responses back to external clients.
 
-2. User microservice: this microservice handles all CRUD requests for users received from the API gateway and other microservices and returns appropriate responses.
+2. User Microservice: this microservice is integrated with an SQL database, PostgreSQL and it handles all CRUD requests for users received from the API gateway and other microservices and returns appropriate responses. Its core responsible include managing user-related operations such as creating new user accounts, updating user information, and managing authentication and authorization.
 
-3. Payment microservice: this microservice handles payment-processing operations received from the API gateway, it communicates with the user-microservice to get the required user data to process the request and returns appropriate responses to the API gateway.
+3. Payment Microservice: this microservice handles payment-related requests received from external clients through the API gateway, it communicates with the user-microservice to get the required user-related data to process requests and returns appropriate responses to the API gateway.
+
+4. Product Microservice: this microservice is integrated with a NoSQL database, MongoDB and it is designed to manage product-related information. It handles all CRUD operations and other extended queries and responds accordingly to the API gateway. MongoDB is used for this microservice as it is well know for its flexibility and because the product schema is designed to have some data-types that is best stored in a document-based database.
 
 4. Message Broker: Apache Kafka is used here to manage AG-microservices and inter-services communication.
 
-5. Databases: all microservices are isolated from each other and are designed to have their own separate database as required.
+5. Databases: all microservices are isolated from each other and are designed to have their own separate database as required. Both SQL (PostgreSQL) and NoSQL (MongoDB) databases are used in this app.
 
 The application could be easily scaled, and more microservices added as required.
 
