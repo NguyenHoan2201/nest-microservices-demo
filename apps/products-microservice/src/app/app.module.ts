@@ -6,6 +6,7 @@ import { AllExceptionsFilter } from "@microservices-demo/shared/filters";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ProductModule } from "./product/product.module";
+import { CategoryModule } from './category/category.module';
 import configuration from "./config/configuration";
 
 @Module({
@@ -22,7 +23,8 @@ import configuration from "./config/configuration";
         uri: configService.get<string>("database.uri"),
       }),
       inject: [ConfigService]
-    })
+    }),
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [

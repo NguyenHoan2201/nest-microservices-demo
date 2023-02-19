@@ -5,3 +5,5 @@ export * from "./auth/auth.dto";
 export * from "./common/entity-id.dto"
 export * from "./product/create-product.dto"
 export * from "./product/update-product.dto"
+export * from "./category/create-category.dto"
+export * from "./category/update-category.dto"

@@ -11,6 +11,7 @@ import * as redisStore from "cache-manager-redis-store";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "../auth/auth.module";
+import { CategoryModule } from "../category/category.module";
 import { PaymentModule } from "../payment/payment.module";
 import { ProductModule } from "../product/product.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -46,6 +47,7 @@ import configuration from "./config/configuration";
       limit: 10,
     }),
     AuthModule,
+    CategoryModule,
     PaymentModule,
     ProductModule
   ],

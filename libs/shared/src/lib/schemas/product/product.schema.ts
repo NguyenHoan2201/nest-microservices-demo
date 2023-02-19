@@ -5,8 +5,12 @@ import { Category } from "../category/category.schema";
 
 export type ProductDocument = HydratedDocument<Product>;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class Product {
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    _id: mongoose.Schema.Types.ObjectId
+
     @Prop({ required: true })
     name: string;
 
@@ -27,7 +31,6 @@ export class Product {
 
     @Prop({ required: true })
     imageUrl: string;
-
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

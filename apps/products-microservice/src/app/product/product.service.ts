@@ -18,13 +18,15 @@ export class ProductService {
 
   async findAll() {
     try {
-      return (await this.productModel.find({}, 'name description price stock').exec()).map(product => ({
-        id: product._id._id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        stock: product.stock
-      }));
+      // return (await this.productModel.find({}, 'name description price stock').exec()).map(product => ({
+      //   id: product._id._id,
+      //   name: product.name,
+      //   description: product.description,
+      //   price: product.price,
+      //   stock: product.stock
+      // }));
+
+      return (await this.productModel.find({}, 'name description price stock').exec())
     } catch (error) {
       Logger.error(JSON.stringify(error));
     }
